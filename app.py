@@ -11,21 +11,23 @@ def time_to_hours(time_str):
 
 # ===== Calculate new Anki cards =====
 def calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, ideal_ratio=0.25, min_new=5):
-    # 昨日の1枚あたり処理時間（秒/枚）
-    sec_per_card = (anki_hours * 3600) / total_cards
+    # 昨日比率を計算
+    actual_ratio = anki_hours / (input_hours + anki_hours)
     
-    # 今日理想のAnki時間（秒）
-    ideal_anki_seconds = input_hours * 3600 * ideal_ratio
+    # 理想比率とほぼ同じなら昨日の総レビュー枚数から期限カードを引いた数を使用
+    if abs(actual_ratio - ideal_ratio) < 0.01:
+        new_cards = total_cards - due_cards
+    else:
+        # 1枚あたり処理時間（秒/枚）
+        sec_per_card = (anki_hours * 3600) / total_cards
+        # 今日理想のAnki時間（秒）
+        ideal_anki_seconds = input_hours * 3600 * ideal_ratio
+        # 今日処理可能な総枚数から期限カードを引く
+        new_cards = ideal_anki_seconds / sec_per_card - due_cards
+        new_cards = int(new_cards)
     
-    # 今日処理可能な総枚数
-    total_possible = ideal_anki_seconds / sec_per_card
-    
-    # 今日が期限のカードを引く
-    new_cards = total_possible - due_cards
-    
-    # 最低値5枚、整数に変換（小数切り捨て）
-    new_cards = max(min_new, int(new_cards))
-    
+    # 最低5枚保証
+    new_cards = max(min_new, new_cards)
     return new_cards
 
 st.title("New Card Limit Calculator / 新規カード上限計算")
