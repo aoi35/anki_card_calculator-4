@@ -58,5 +58,8 @@ if st.button("Calculate / 計算"):
             sec_per_card = (anki_hours*3600)/total_cards
             ideal_anki_seconds = input_hours*3600*ideal_ratio
             new_cards = int(ideal_anki_seconds / sec_per_card - due_cards)
-        new_cards = max(5, new_cards)
-        st.success(f"Recommended number of new cards: {new_cards}\n推奨新規カード枚数: {new_cards}")
+
+        # ÷2 して 0 未満なら 0
+        adjusted_cards = max(0, new_cards // 2)
+
+        st.success(f"Recommended number of new cards (adjusted): {adjusted_cards}\n推奨新規カード枚数 (調整後): {adjusted_cards}")
