@@ -23,8 +23,8 @@ def calculate_new_cards(input_hours, anki_hours, total_cards, due_cards, ideal_r
     # 今日が期限のカードを引く
     new_cards = total_possible - due_cards
     
-    # 最低値5枚
-    new_cards = max(min_new, int(round(new_cards)))
+    # 最低値5枚、整数に変換（小数切り捨て）
+    new_cards = max(min_new, int(new_cards))
     
     return new_cards
 
